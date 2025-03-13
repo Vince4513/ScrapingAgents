@@ -14,9 +14,10 @@ load_dotenv(override=True) # Load environment variables
 
 
 class ScrapingCrew:
-    def __init__(self, url, interests):
+    def __init__(self, url, interests, output_type):
         self.url = url
         self.interests = interests
+        self.output_type = output_type
 
     def run(self):
         # Define your custom agents and tasks in agents.py and tasks.py
@@ -29,15 +30,18 @@ class ScrapingCrew:
         data_governance_expert = agents.data_governance_expert()
 
         # Custom tasks include agent name and variables as input
-        check_conformity = tasks.check_conformity(
+        data_formatting = tasks.data_formatting(
             expert_data_manager,
-            self.interests
+            self.url,
+            self.interests,
+            self.output_type
         )
 
-        scrape_website = tasks.scrape_website(
+        data_scraping = tasks.data_scraping(
             data_engineer_expert,
             self.url,
-            self.interests
+            self.interests,
+            self.output_type
         )
 
         gather_legal_info = tasks.gather_legal_info(
@@ -54,8 +58,8 @@ class ScrapingCrew:
                 data_governance_expert
             ],
             tasks=[
-                check_conformity, 
-                scrape_website, 
+                data_formatting, 
+                data_scraping, 
                 gather_legal_info
             ],
             verbose=True,
@@ -78,7 +82,11 @@ if __name__ == "__main__":
         dedent("""
         What do you wanna scrape on the web page?
         """))
-    scraping_crew = ScrapingCrew(url, interests)
+    output_type = input(
+        dedent("""
+        Do you prefer a CSV or a JSON file?
+        """))
+    scraping_crew = ScrapingCrew(url, interests, output_type)
     result = scraping_crew.run()
     print("\n\n########################")
     print("## Here is you scraped data crew run result:")
