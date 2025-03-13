@@ -1,7 +1,7 @@
 from crewai import Agent
 from textwrap import dedent
 from langchain_community.llms import OpenAI
-# from langchain_ollama import OllamaLLM
+from langchain_ollama import OllamaLLM
 from langchain_openai import ChatOpenAI
 
 from tools.search_tools import SearchTools
@@ -16,15 +16,15 @@ Creating Agents Cheat Sheet:
     Build a top down structure of the crew.
 
 Goal:
-- Create a 7-day travel itinerary with detailled per-day plans,
-    including budget, packing suggestions, and safety tips.
+- Scrape data from a specific website and give us a csv or json file aggregating 
+    all this data.
 
 Captain/Manager/Boss:
-- Expert Travel Agent (Organize trip)
+- Expert Data Manager (Manage web scraping process)
 
 Employee/Experts to hire:
-- City Selection Expert (Where to go)
-- Local Tour Guide (What to do)
+- Data Engineer Expert (How to scrape)
+- Data Governance Expert (What to scrape)
 
 Notes:
 - Agents should be results driven and have a clear goal in mind
@@ -36,35 +36,21 @@ Notes:
 # This is an example of how to define custom agents.
 # You can define as many agents as you want.
 # You can also define custom tasks in tasks.py
-class TripAgents:
+class ScrapingAgents:
     def __init__(self):
         self.OpenAIGPT35 = ChatOpenAI(name="gpt-3.5-turbo", temperature=0.7)
         self.OpenAIGPT4 = ChatOpenAI(name="gpt-4", temperature=0.7)
         # self.Ollama = OllamaLLM(model="openhermes")
 
-    def expert_travel_agent(self):
+    def expert_data_manager(self):  
         return Agent(
-            role="Expert Travel Agent",
-            backstory=dedent(f"""Expert in travel planning and logistics.
-                             I have decades of experience making travel itineraries."""),
+            role="Expert Data Manager",
+            backstory=dedent(f"""Expert in computer science projects.
+                             I have decades of experience making IT projects successful."""),
             goal=dedent(f"""
-                        Create a 7-day travel itinerary with detailed per-day plans,
-                        include budget, packing suggestions, and safety tips.
+                        Create a structured csv or json file with the data extracted from the website. 
+                        We should not have duplicates or empty rows. 
                         """),
-            tools=[
-                SearchTools.search_the_internet, 
-                CalculatorTools.calculate
-            ],
-            allow_delegation=False,
-            verbose=True,
-            llm=self.OpenAIGPT35,
-        )
-
-    def city_selection_expert(self):
-        return Agent(
-            role="City Selection Expert",
-            backstory=dedent(f"""Expert at analyzing data to pick ideal destinations"""),
-            goal=dedent(f"""Select the best cities based on weather, season, prices, and traveler interests"""),
             tools=[
                 SearchTools.search_the_internet
             ],
@@ -72,13 +58,27 @@ class TripAgents:
             verbose=True,
             llm=self.OpenAIGPT35,
         )
-    
-    def local_tour_guide(self):
+
+    def data_engineer_expert(self):
         return Agent(
-            role="Local Tour Guide",
-            backstory=dedent(f"""Knowledgeable local guide with extensive information 
-                             about the city, it's attractions and customs"""),
-            goal=dedent(f"""Provide the BEST insights about the selected city"""),
+            role="Data Engineer Expert",
+            backstory=dedent(f"""Expert at scraping data ovr the web"""),
+            goal=dedent(f"""Parse the web page based on client interests"""),
+            tools=[
+                SearchTools.search_the_internet,
+                # Apify tool
+            ],
+            allow_delegation=False,
+            verbose=True,
+            llm=self.OpenAIGPT35,
+        )
+    
+    def data_governance_expert(self):
+        return Agent(
+            role="Data Governance Expert",
+            backstory=dedent(f"""Knowledgeable data governance expert with extensive information 
+                             about the rules about laws like GDPR"""),
+            goal=dedent(f"""Provide the BEST insights about the data the client is interested in."""),
             tools=[
                 SearchTools.search_the_internet
             ],

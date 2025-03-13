@@ -3,8 +3,8 @@
 
 from crewai import Crew
 from textwrap import dedent
-from agents import TripAgents
-from tasks import TripTasks
+from agents import ScrapingAgents
+from tasks import ScrapingTasks
 
 from dotenv import load_dotenv
 load_dotenv(override=True) # Load environment variables
@@ -13,57 +13,50 @@ load_dotenv(override=True) # Load environment variables
 # You can define as many agents and tasks as you want in agents.py and tasks.py
 
 
-class TripCrew:
-    def __init__(self, origin, cities, date_range, interests):
-        self.origin = origin
-        self.cities = cities
-        self.date_range = date_range
+class ScrapingCrew:
+    def __init__(self, url, interests):
+        self.url = url
         self.interests = interests
 
     def run(self):
         # Define your custom agents and tasks in agents.py and tasks.py
-        agents = TripAgents()
-        tasks = TripTasks()
+        agents = ScrapingAgents()
+        tasks = ScrapingTasks()
 
         # Define your custom agents and tasks here
-        expert_travel_agent = agents.expert_travel_agent()
-        city_selection_expert = agents.city_selection_expert()
-        local_tour_guide = agents.local_tour_guide()
+        expert_data_manager = agents.expert_data_manager()
+        data_engineer_expert = agents.data_engineer_expert()
+        data_governance_expert = agents.data_governance_expert()
 
         # Custom tasks include agent name and variables as input
-        plan_itinerary = tasks.plan_itinerary(
-            expert_travel_agent,
-            self.cities,
-            self.date_range,
+        check_conformity = tasks.check_conformity(
+            expert_data_manager,
             self.interests
         )
 
-        identify_city = tasks.identify_city(
-            city_selection_expert,
-            self.origin,
-            self.cities,
-            self.date_range,
+        scrape_website = tasks.scrape_website(
+            data_engineer_expert,
+            self.url,
             self.interests
         )
 
-        gather_city_info = tasks.gather_city_info(
-            local_tour_guide,
-            self.cities,
-            self.date_range,
+        gather_legal_info = tasks.gather_legal_info(
+            data_governance_expert,
+            self.url,
             self.interests
         )
 
         # Define your custom crew here
         crew = Crew(
             agents=[
-                expert_travel_agent, 
-                city_selection_expert, 
-                local_tour_guide
+                expert_data_manager, 
+                data_engineer_expert, 
+                data_governance_expert
             ],
             tasks=[
-                plan_itinerary, 
-                identify_city, 
-                gather_city_info
+                check_conformity, 
+                scrape_website, 
+                gather_legal_info
             ],
             verbose=True,
         )
@@ -75,27 +68,19 @@ class TripCrew:
 # This is the main function that you will use to run your custom crew.
 if __name__ == "__main__":
     
-    print("## Welcome to Trip Planner Crew")
+    print("## Welcome to Scraping Crew")
     print("-------------------------------")
-    origin = input(
+    url = input(
         dedent("""
-        From where will you be traveling from?
-        """))
-    cities = input(
-        dedent("""
-        What are the cities options you are interested in visiting?
-        """))
-    date_range = input(
-        dedent("""
-        What is the date range you are interested in traveling?
+        What is the url of the web page to scrape data from?
         """))
     interests = input(
         dedent("""
-        What are some of your high level interests and hobbies?
+        What do you wanna scrape on the web page?
         """))
-    trip_crew = TripCrew(origin, cities, date_range, interests)
-    result = trip_crew.run()
+    scraping_crew = ScrapingCrew(url, interests)
+    result = scraping_crew.run()
     print("\n\n########################")
-    print("## Here is you trip crew run result:")
+    print("## Here is you scraped data crew run result:")
     print("########################\n")
     print(result)

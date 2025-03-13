@@ -43,11 +43,11 @@ Key Steps for Task Creation:
         '''), agent=agent)
 """
 
-class TripTasks:
+class ScrapingTasks:
     def __tip_section(self):
         return "If you do your BEST WORK, I'll give you a $10,000 commission!"
 
-    def plan_itinerary(self, agent, city, travel_dates, interests):
+    def check_conformity(self, agent, interests):
         return Task(
             description=dedent(
                 f"""
@@ -59,9 +59,7 @@ class TripTasks:
                 from arrival to departure, integrating the city guide information with practical travel logistics.
 
             **Parameters**: 
-            - City: {city}
-            - Trip Date: {travel_dates}
-            - Traveler Interests: {interests}
+            - Data : {interests}
             
             **Note**: {self.__tip_section()}
 
@@ -71,7 +69,7 @@ class TripTasks:
             agent=agent,
         )
 
-    def identify_city(self, agent, origin, cities, interests, travel_dates):
+    def scrape_website(self, agent, url, interests):
         return Task(
             description=dedent(
                 f'''
@@ -84,10 +82,8 @@ class TripTasks:
                 including actual flight costs, weather forecast, and attractions. 
 
             **Parameters**: 
-            - Origin: {origin}
-            - Cities: {cities}
-            - Interests: {interests}
-            - Trip Date: {travel_dates}
+            - URL: {url}
+            - Data: {interests}
 
             **Note**: {self.__tip_section()}
 
@@ -96,7 +92,7 @@ class TripTasks:
             agent=agent,
         )
 
-    def gather_city_info(self, agent, city, travel_dates, interests):
+    def gather_legal_info(self, agent, url, interests):
         return Task(
             description=dedent(
                 f'''
@@ -107,9 +103,8 @@ class TripTasks:
                 hidden gems, cultural hotspots, must-visit landmarks, weather forecasts, and high-level costs.
 
             **Parameters**: 
-            - City: {city}
-            - Interests: {interests}
-            - Trip Date: {travel_dates}
+            - URL: {url}
+            - Data: {interests}
 
             **Note**: {self.__tip_section()}
 
