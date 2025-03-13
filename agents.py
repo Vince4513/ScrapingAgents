@@ -4,6 +4,7 @@ from langchain_community.llms import OpenAI
 from langchain_ollama import OllamaLLM
 from langchain_openai import ChatOpenAI
 
+from langchain_apify import ApifyActorsTool
 from tools.search_tools import SearchTools
 from tools.calculator_tools import CalculatorTools
 
@@ -66,7 +67,7 @@ class ScrapingAgents:
             goal=dedent(f"""Parse the web page based on client interests"""),
             tools=[
                 SearchTools.search_the_internet,
-                # Apify tool
+                ApifyActorsTool("apify/rag-web-browser")
             ],
             allow_delegation=False,
             verbose=True,
