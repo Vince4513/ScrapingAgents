@@ -15,6 +15,7 @@ langchain = "^0.3.19"
 langchain-community = "^0.3.18"
 langchain-ollama = "^0.2.3"
 langchain-apify = "^0.1.2"
+langgraph = "^0.3.10"
 
 [tool.pyright]
 useLibraryCodeForTypes = true

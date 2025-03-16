@@ -25,16 +25,15 @@ class ScrapingCrew:
         tasks = ScrapingTasks()
 
         # Define your custom agents and tasks here
-        expert_data_manager = agents.expert_data_manager()
-        data_engineer_expert = agents.data_engineer_expert()
         data_governance_expert = agents.data_governance_expert()
+        data_engineer_expert = agents.data_engineer_expert()
+        expert_data_manager = agents.expert_data_manager()
 
         # Custom tasks include agent name and variables as input
-        data_formatting = tasks.data_formatting(
-            expert_data_manager,
+        gather_legal_info = tasks.gather_legal_info(
+            data_governance_expert,
             self.url,
-            self.interests,
-            self.output_type
+            self.interests
         )
 
         data_scraping = tasks.data_scraping(
@@ -44,23 +43,24 @@ class ScrapingCrew:
             self.output_type
         )
 
-        gather_legal_info = tasks.gather_legal_info(
-            data_governance_expert,
+        data_formatting = tasks.data_formatting(
+            expert_data_manager,
             self.url,
-            self.interests
+            self.interests,
+            self.output_type
         )
 
         # Define your custom crew here
         crew = Crew(
             agents=[
-                expert_data_manager, 
+                data_governance_expert, 
                 data_engineer_expert, 
-                data_governance_expert
+                expert_data_manager
             ],
             tasks=[
-                data_formatting, 
+                gather_legal_info, 
                 data_scraping, 
-                gather_legal_info
+                data_formatting
             ],
             verbose=True,
         )
